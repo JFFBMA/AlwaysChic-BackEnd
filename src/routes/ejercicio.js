@@ -11,10 +11,6 @@ router.get("/", async (req, res) => {
     let { data: usuarios, error } = await supabase
         .from("usuarios")
         .select("id,nombres,genero,nacionalidad");
-        res.json(usuarios)
-});
-        .from('usuarios')
-        .select('id,nombres,genero,nacionalidad')
         //res.json(usuarios)
         if (error) {
             res.status(400).json(error);
