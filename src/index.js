@@ -32,6 +32,7 @@ app.use(express.json());
 app.use("/api/movies", require("./routes/movies"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/ejercicio", require("./routes/ejercicio"));
+app.use("/api/login", require("./routes/login"));
 
 // starting the server
 app.listen(app.get("port"), () => {
