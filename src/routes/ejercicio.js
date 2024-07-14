@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", async (req, res) => {
     let { data: usuarios, error } = await supabase
         .from("usuarios")
-        .select("id,nombres,genero,nacionalidad");
+        .select("id, nombres, genero, nacionalidad, correo, password");
         //res.json(usuarios)
         if (error) {
             res.status(400).json(error);
@@ -33,16 +33,18 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    const { nombres, genero, nacionalidad } = req.body
+    const { nombres, genero, nacionalidad, correo, password } = req.body;
 
-    if ( nombres && genero ) {
+    if ( correo && password ) {
         const { data: usuarios, error } = await supabase
             .from("usuarios")
             .insert([
                 {
                 nombres: nombres,
                 genero: genero,
-                nacionalidad: nacionalidad
+                nacionalidad: nacionalidad,
+                correo: correo,
+                password: password
                 }
             ])
             .select();
@@ -52,14 +54,14 @@ router.post("/", async (req, res) => {
                 res.status(200).json(usuarios) 
             }
     } else {
-        res.status(400).json({error: "Crea : El nombre completo y el género son obligatorios."})
+        res.status(400).json({error: "Crea : Faltan campos obligatorios (correo y password)."})
     }
 });
 
 router.put("/", async (req, res) => {
-    const { id, nombres, genero, nacionalidad } = req.body;
+    const { id, nombres, genero, nacionalidad, correo, password } = req.body;
     
-    if (nombres && genero) {
+    if ( correo && password ) {
         
         const { data: usuarios, error } = await supabase
             .from("usuarios")
@@ -67,6 +69,8 @@ router.put("/", async (req, res) => {
                 nombres: nombres,
                 genero: genero,
                 nacionalidad: nacionalidad,
+                correo: correo,
+                password: password
             })
             .eq("id", id)
             .select();
@@ -78,7 +82,7 @@ router.put("/", async (req, res) => {
         }
     } else {
         res.status(400).json({
-            error: "Actualiza : El nombre y el género son obligatorios.",
+            error: "Actualiza : El correo y el password son obligatorios.",
         });
     }
 });
