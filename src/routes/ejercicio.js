@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", async (req, res) => {
     let { data: usuarios, error } = await supabase
         .from("usuarios")
-        .select("id, nombres, genero, nacionalidad, correo, password");
+        .select("*");
         if (error) {
             res.status(400).json(error);
         } else {
@@ -31,9 +31,9 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    const { nombres, genero, nacionalidad } = req.body;
+    const { nombres, genero, nacionalidad, correo, password } = req.body;
 
-    if (nombres && genero) {
+    if (correo && password) {
         const { data: usuarios, error } = await supabase
             .from("usuarios")
             .insert([
@@ -79,9 +79,7 @@ router.put("/", async (req, res) => {
             res.status(200).json(usuarios);
         }
     } else {
-        res.status(400).json({
-            error: "Actualiza : El correo y el password son obligatorios.",
-        });
+        res.status(400).json({error: "Actualiza : El correo y el password son obligatorios."});
     }
 });
 
