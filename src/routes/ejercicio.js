@@ -11,20 +11,6 @@ router.get("/", async (req, res) => {
     let { data: usuarios, error } = await supabase
         .from("usuarios")
         .select("id, nombres, genero, nacionalidad, correo, password");
-        //res.json(usuarios)
-        if (error) {
-            res.status(400).json(error);
-        } else {
-            res.status(200).json(usuarios);
-        }
-}); 
-
-router.get("/:id", async (req, res) => {
-    let { data: usuarios, error } = await supabase
-        .from("usuarios")
-        .select("*")
-        .eq("id", req.params.id);
-        //res.json(usuarios);
         if (error) {
             res.status(400).json(error);
         } else {
@@ -32,10 +18,22 @@ router.get("/:id", async (req, res) => {
         }
 });
 
-router.post("/", async (req, res) => {
-    const { nombres, genero, nacionalidad, correo, password } = req.body;
+router.get("/:id", async (req, res) => {
+    let { data: usuarios, error } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id", req.params.id);
+    if (error) {
+        res.status(400).json(error);
+    } else {
+        res.status(200).json(usuarios);
+    }
+});
 
-    if ( correo && password ) {
+router.post("/", async (req, res) => {
+    const { nombres, genero, nacionalidad } = req.body;
+
+    if (nombres && genero) {
         const { data: usuarios, error } = await supabase
             .from("usuarios")
             .insert([
