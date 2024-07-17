@@ -1,15 +1,8 @@
-// console.log("hola mundo")
-// const array=["1","2","3"]
-// for (let index = 0; index < array.length; index++) {
-//   const element = array[index];
-//   console.log(element);
-// }
-
 const express = require("express")
-const app = express()
 const morgan = require("morgan")
 const cors = require("cors");
 const fetch = () => import("node-fetch").then (({default: fetch}) => fetch())
+const app = express()
 
 // settings
 app.set("port", process.env.PORT || 4000);
@@ -19,7 +12,7 @@ app.use(
     origin: "*", // Allow requests from all origins (replace with specific origin in production)
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
-    credentials: true,
+    credentials: true
   })
 );
 
@@ -29,9 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // routes
-app.use("/api/movies", require("./routes/movies"));
-app.use("/api/users", require("./routes/users"));
-app.use("/api/ejercicio", require("./routes/ejercicio"));
+app.use("/api/usuarios", require("./routes/usuarios"));
 app.use("/api/login", require("./routes/login"));
 
 // starting the server
