@@ -26,6 +26,6 @@ app.use("/api/usuarios", require("./routes/usuarios"));
 app.use("/api/login", require("./routes/login"));
 
 // starting the server
-app.listen(app.get("port"), () => {
-  console.log(`Server on port ${app.get("port")}`);
+app.listen(app.get("port"), () => { 
+  console.log(`Server on port ${app.get("port")}`, new Date());
 });
