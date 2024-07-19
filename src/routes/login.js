@@ -9,20 +9,6 @@ const supabase = createClient(
 
 const router = Router();
 
-// router.get("/:correo", async (req, res) => 
-//     {   
-//     let { data: usuarios, error } = await supabase
-//         .from("usuarios")
-//         .select("*")
-//         .eq("correo", req.params.correo); 
-//         if (error) {
-//             res.status(400).json(error);
-//         } else {
-//             res.status(200).json(usuarios);
-//         }
-// }
-// );
-
 // Crea Usuario
 router.post("/signUp", async (req, res) => {
     let { data, error } = await supabase.auth.signUp({
@@ -38,25 +24,31 @@ router.post("/signUp", async (req, res) => {
 
 // Login de usuario
 router.post("/", async (req, res) => {
+    console.log("está entrando al login" )
     let { data, error } = await supabase.auth.signInWithPassword({
         email: req.body.correo,
         password: req.body.password
     });
+    const accessToken = data.session.access_token;
     if (error) {
         res.status(405).json(error);
     } else {
-        res.status(200).json(data);
+        res.status(200).json({accessToken});
     }
-});
+})
 
-// Obtenga el objeto JSON para el usuario que inició sesión.
-router.get("/", async (req, res) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (error) {
-        res.status(405).json(error);
-    } else {
-        res.status(200).json(data);
-    }
-});
+// router.get("/:correo", async (req, res) => 
+//     {   
+//     let { data: usuarios, error } = await supabase
+//         .from("usuarios")
+//         .select("*")
+//         .eq("correo", req.params.correo); 
+//         if (error) {
+//             res.status(400).json(error);
+//         } else {
+//             res.status(200).json(usuarios);
+//         }
+// }
+// );
 
 module.exports = router;
