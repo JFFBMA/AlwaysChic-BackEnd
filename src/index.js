@@ -17,13 +17,13 @@ app.use(
 );
 
 // middlewares
-app.use(morgan("common"));
+app.use(morgan("common")); 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // routes
-app.use("/api/usuarios", require("./routes/usuarios"));
 app.use("/api/login", require("./routes/login"));
+app.use("/api/usuarios", require("./routes/usuarios"));
 
 // starting the server
 app.listen(app.get("port"), () => { 
