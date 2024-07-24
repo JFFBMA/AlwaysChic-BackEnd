@@ -9,40 +9,52 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = Router()
 
-// Crea Usuario
+// Crea Usuario en el esquema de autenticación de Supabase
 router.post("/signUp", async (req, res) => {
     console.log("está entrando al registro");
     try {
         let { data, error } = await supabase.auth.signUp({
             email: req.body.correo,
             password: req.body.password,
-        })
-        console.log("signup :Data->", data)
-        console.log("signup :Error->", error);
+        });
+        // console.log("signup :Data->", data)    //borrar
+        // console.log("signup :Error->", error); //borrar
         if (error) {
-            res.status(405).json(error)
+            res.status(405).json(error);
         } else {
-            res.status(200).json(data)
+            res.status(200).json(data);
         }
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 })
 
-// Login de usuario
+// Login de usuario en el esquema de autenticación de Supabase y devolviendo el nombre de la tabla usuarios
 router.post("/", async (req, res) => {
-    console.log("entra al login" )
-    let { data, error } = await supabase.auth.signInWithPassword({
-        email: req.body.correo,
-        password: req.body.password
-    });
-    console.log("login: data->",data)
-    console.log("login: error->",error)
-    if (error) {
-        res.status(405).json(error)
+    //console.log("entra al login");  //borrar
+    let { data: authData, error: authError } = await supabase.auth.signInWithPassword(
+        {
+            email: req.body.correo,
+            password: req.body.password,
+        });
+    //console.log("login: data->",data)  //borrar 
+    //console.log("login: error->",error) //borrar
+    if (authError) {
+        res.status(401).json({ authError: "Credenciales inválidas" });
     } else {
-        //const accessToken = data.session.access_token;
-        res.status(200).json(data)
+        // consulto el nombre en usuarios y tomo el nombre para agregarlo a la data y tenerlo en el fronend
+        const { data, error } = await supabase
+            .from("usuarios")
+            .select("nombre")
+            .eq("auth_user_id", authData.user.id);
+        if (error) {
+            authData.nombre = "No olvides actualizar tus datos."
+        } else {
+            authData.nombre = data[0].nombre
+        }
+        console.log("login: authData->", authData); //borrar
+        //console.log("login: authError->", authError); //borrar
+        res.status(200).json(authData);
     }
 })
 

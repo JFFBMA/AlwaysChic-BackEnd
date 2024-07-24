@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { createClient } = require("@supabase/supabase-js");
 const { result } = require("underscore");
+
 // Create a single supabase client for interacting with your database
 const supabaseUrl = "https://jnzbidaokbumcwymajsd.supabase.co";
 const supabaseKey =
@@ -9,6 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = Router();
 
+// Inserta o actualiza la tabla "usuarios" buscando por "auth_user_id" que viene por req.
 router.put("/", async (req, res) => {
     const {auth_user_id,token,nombre,edad,genero,telefono,direccion,ciudad,correo}=req.body.usuarioActualizado
     // console.log("act: req.body.usuarioActualizado->",req.body.usuarioActualizado); // borrar
@@ -74,67 +76,97 @@ router.put("/", async (req, res) => {
     }
 });
 
-router.get("/", async (req, res) => {
-    let { data: usuarios, error } = await supabase
-        .from("usuarios")
-        .select("*");
-        if (error) {
-            res.status(400).json(error);
-        } else {
-            res.status(200).json(usuarios);
-        }
-});
+// desactualizada....Consulta la tabala "usuarios" buscando por "auth_user_id" que viene por req.
+// router.get("/", async (req, res) => {
+    // console.log("Entra a consulta por auth_user_id" )
+    // console.log("consulta : req.query->", req.query);
 
-router.get("/:id", async (req, res) => {
-    let { data: usuarios, error } = await supabase
-        .from("usuarios")
-        .select("*")
-        .eq("id", req.params.id);
-    if (error) {
-        res.status(400).json(error);
-    } else {
-        res.status(200).json(usuarios);
-    }
-});
+    // const { id_auth_users } = req.query
 
-router.post("/", async (req, res) => {
-    const { nombres, genero, nacionalidad, correo, password } = req.body;
+    // try {
+    //     const { data, error } = await supabase
+    //         .from("usuarios")
+    //         .select("nombre")
+    //         .eq("id_auth_users", id_auth_users);
 
-    if (correo && password) {
-        const { data: usuarios, error } = await supabase
-            .from("usuarios")
-            .insert([
-                {
-                nombres: nombres,
-                genero: genero,
-                nacionalidad: nacionalidad,
-                correo: correo,
-                password: password
-                }
-            ])
-            .select()
+    //     if (error) {
+    //         throw error;
+    //     }
 
-            if (error) {
-                res.status(400).json(error)
-            } else {
-                res.status(200).json(usuarios) 
-            }
-    } else {
-        res.status(400).json({error: "Crea : Faltan campos obligatorios (correo y password)."})
-    }
-});
+    //     if (data.length === 0) {
+    //         return res.status(404).json({ error: "Usuario no encontrado" });
+    //     }
 
-router.delete("/:id", async (req, res) => {
-    const { data: usuarios, error } = await supabase
-        .from("usuarios")
-        .delete()
-        .eq("id", req.params.id)
-        .select()
-    if (error) {
-        res.status(400).json(error);
-    } else {
-        res.status(200).json(usuarios);
-    }
-});
+    //     // Devolver el nombre del usuario
+    //     res.json({ nombre: data[0].nombre });
+    // } catch (error) {
+    //     console.error("Cons : Error al obtener el nombre del usuario:", error);
+    //     res.status(500).json({ error: "Cons:Error interno del servidor" });
+    // }
+    // let { data: usuarios, error } = await supabase
+    //     .from("usuarios")
+    //     .select("*")
+    //     .eq("auth_user_id", req.body.id);
+    //     if (error) {
+    //         res.status(400).json(error);
+    //     } else {
+    //         res.status(200).json(data);
+    //     }
+// });
+
+// desactualizada
+// router.get("/:id", async (req, res) => {
+//     let { data: usuarios, error } = await supabase
+//         .from("usuarios")
+//         .select("*")
+//         .eq("id", req.params.id);
+//     if (error) {
+//         res.status(400).json(error);
+//     } else {
+//         res.status(200).json(usuarios);
+//     }
+// });
+
+// desactualizada
+// router.post("/", async (req, res) => {
+//     const { nombres, genero, nacionalidad, correo, password } = req.body;
+
+//     if (correo && password) {
+//         const { data: usuarios, error } = await supabase
+//             .from("usuarios")
+//             .insert([
+//                 {
+//                 nombres: nombres,
+//                 genero: genero,
+//                 nacionalidad: nacionalidad,
+//                 correo: correo,
+//                 password: password
+//                 }
+//             ])
+//             .select()
+
+//             if (error) {
+//                 res.status(400).json(error)
+//             } else {
+//                 res.status(200).json(usuarios) 
+//             }
+//     } else {
+//         res.status(400).json({error: "Crea : Faltan campos obligatorios (correo y password)."})
+//     }
+// });
+
+// desactualizada
+// router.delete("/:id", async (req, res) => {
+//     const { data: usuarios, error } = await supabase
+//         .from("usuarios")
+//         .delete()
+//         .eq("id", req.params.id)
+//         .select()
+//     if (error) {
+//         res.status(400).json(error);
+//     } else {
+//         res.status(200).json(usuarios);
+//     }
+// });
 
 module.exports = router;
