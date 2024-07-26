@@ -10,27 +10,42 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const router = Router();
 
+// Consulta la tabla "usuarios" buscando por "auth_user_id" que viene por req.
+router.get("/:id", async (req, res) => {
+    let { data: usuarios, error } = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("auth_user_id", req.params.id);
+    if (error) {
+        res.status(400).json(error);
+    } else {
+        res.status(200).json(usuarios);
+    }
+});
+
+// router.get("/", async (req, res) => {
+    
+//     const {data: { user }  } = await supabase.auth.getUser();
+//     console.log("user:",user)
+//     res.status(200).json(user);
+//     // leer doc para manejar error
+// });
+
 // Inserta o actualiza la tabla "usuarios" buscando por "auth_user_id" que viene por req.
 router.put("/", async (req, res) => {
     const {auth_user_id,token,nombre,edad,genero,telefono,direccion,ciudad,correo}=req.body.usuarioActualizado
-    // console.log("act: req.body.usuarioActualizado->",req.body.usuarioActualizado); // borrar
     if (token) {
-        console.log("Act : Entra a actualizar"); //borrar
         try {
-            console.log("act: auth_user_id->", auth_user_id); // borrar
             // Revisa si el usuario ya existe
             let { data: existingUser, error: fetchError } = await supabase
                 .from("usuarios")
                 .select("*")
                 .eq("auth_user_id", auth_user_id)
                 .single();
-            console.log("act : existingUser->", existingUser); //borrar
-            console.log("act : fetchError->", fetchError); //borrar
             var result;
             // Verifica si el usuario existe o no
             if (existingUser) {
                 // Si el usuario SI existe lo actualiza
-                console.log("lo actualiza v2");
                 const { data, error } = await supabase
                     .from("usuarios")
                     .update({
@@ -42,13 +57,11 @@ router.put("/", async (req, res) => {
                         ciudad: ciudad
                     })
                     .eq("auth_user_id", auth_user_id);
-                console.log("act : data->", data);
-                console.log("act : error->", error );
                 if (error) throw error;
                 result = data;
             } else {
                 // Si el usuario NO existe, lo crea
-                console.log("lo inserta v2");
+                console.log("lo crea v2");
                 const { data, error } = await supabase
                     .from("usuarios")
                     .insert([
@@ -75,98 +88,5 @@ router.put("/", async (req, res) => {
         });
     }
 });
-
-// desactualizada....Consulta la tabala "usuarios" buscando por "auth_user_id" que viene por req.
-// router.get("/", async (req, res) => {
-    // console.log("Entra a consulta por auth_user_id" )
-    // console.log("consulta : req.query->", req.query);
-
-    // const { id_auth_users } = req.query
-
-    // try {
-    //     const { data, error } = await supabase
-    //         .from("usuarios")
-    //         .select("nombre")
-    //         .eq("id_auth_users", id_auth_users);
-
-    //     if (error) {
-    //         throw error;
-    //     }
-
-    //     if (data.length === 0) {
-    //         return res.status(404).json({ error: "Usuario no encontrado" });
-    //     }
-
-    //     // Devolver el nombre del usuario
-    //     res.json({ nombre: data[0].nombre });
-    // } catch (error) {
-    //     console.error("Cons : Error al obtener el nombre del usuario:", error);
-    //     res.status(500).json({ error: "Cons:Error interno del servidor" });
-    // }
-    // let { data: usuarios, error } = await supabase
-    //     .from("usuarios")
-    //     .select("*")
-    //     .eq("auth_user_id", req.body.id);
-    //     if (error) {
-    //         res.status(400).json(error);
-    //     } else {
-    //         res.status(200).json(data);
-    //     }
-// });
-
-// desactualizada
-// router.get("/:id", async (req, res) => {
-//     let { data: usuarios, error } = await supabase
-//         .from("usuarios")
-//         .select("*")
-//         .eq("id", req.params.id);
-//     if (error) {
-//         res.status(400).json(error);
-//     } else {
-//         res.status(200).json(usuarios);
-//     }
-// });
-
-// desactualizada
-// router.post("/", async (req, res) => {
-//     const { nombres, genero, nacionalidad, correo, password } = req.body;
-
-//     if (correo && password) {
-//         const { data: usuarios, error } = await supabase
-//             .from("usuarios")
-//             .insert([
-//                 {
-//                 nombres: nombres,
-//                 genero: genero,
-//                 nacionalidad: nacionalidad,
-//                 correo: correo,
-//                 password: password
-//                 }
-//             ])
-//             .select()
-
-//             if (error) {
-//                 res.status(400).json(error)
-//             } else {
-//                 res.status(200).json(usuarios) 
-//             }
-//     } else {
-//         res.status(400).json({error: "Crea : Faltan campos obligatorios (correo y password)."})
-//     }
-// });
-
-// desactualizada
-// router.delete("/:id", async (req, res) => {
-//     const { data: usuarios, error } = await supabase
-//         .from("usuarios")
-//         .delete()
-//         .eq("id", req.params.id)
-//         .select()
-//     if (error) {
-//         res.status(400).json(error);
-//     } else {
-//         res.status(200).json(usuarios);
-//     }
-// });
 
 module.exports = router;

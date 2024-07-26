@@ -11,14 +11,11 @@ const router = Router()
 
 // Crea Usuario en el esquema de autenticación de Supabase
 router.post("/signUp", async (req, res) => {
-    console.log("está entrando al registro");
     try {
         let { data, error } = await supabase.auth.signUp({
             email: req.body.correo,
             password: req.body.password,
         });
-        // console.log("signup :Data->", data)    //borrar
-        // console.log("signup :Error->", error); //borrar
         if (error) {
             res.status(405).json(error);
         } else {
@@ -29,16 +26,13 @@ router.post("/signUp", async (req, res) => {
     }
 })
 
-// Login de usuario en el esquema de autenticación de Supabase y devolviendo el nombre de la tabla usuarios
+// Login de usuario en el esquema de autenticación de Supabase y devolviendo el nombre en la tabla usuarios
 router.post("/", async (req, res) => {
-    //console.log("entra al login");  //borrar
     let { data: authData, error: authError } = await supabase.auth.signInWithPassword(
         {
             email: req.body.correo,
             password: req.body.password,
         });
-    //console.log("login: data->",data)  //borrar 
-    //console.log("login: error->",error) //borrar
     if (authError) {
         res.status(401).json({ authError: "Credenciales inválidas" });
     } else {
@@ -47,13 +41,11 @@ router.post("/", async (req, res) => {
             .from("usuarios")
             .select("nombre")
             .eq("auth_user_id", authData.user.id);
-        if (error) {
+        if (data.length === 0) { 
             authData.nombre = "No olvides actualizar tus datos."
         } else {
             authData.nombre = data[0].nombre
         }
-        console.log("login: authData->", authData); //borrar
-        //console.log("login: authError->", authError); //borrar
         res.status(200).json(authData);
     }
 })
