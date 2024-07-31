@@ -1,12 +1,10 @@
+require("dotenv").config();
 const { Router } = require("express");
 const { createClient } = require("@supabase/supabase-js");
 const { result } = require("underscore");
 
-// Create a single supabase client for interacting with your database
-const supabaseUrl = "https://jnzbidaokbumcwymajsd.supabase.co";
-const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpuemJpZGFva2J1bWN3eW1hanNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjE2MTc0NjUsImV4cCI6MjAzNzE5MzQ2NX0.mUcXuiWup1vSoCfkq3p3BBOdYnLRLr3JWLqp-OVGZQU";
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Crea cliente Supabase para interactuar con la BD
+const supabase = createClient(process.env.DATABASE_URL, process.env.API_KEY);
 
 const router = Router();
 
@@ -61,7 +59,6 @@ router.put("/", async (req, res) => {
                 result = data;
             } else {
                 // Si el usuario NO existe, lo crea
-                console.log("lo crea v2");
                 const { data, error } = await supabase
                     .from("usuarios")
                     .insert([
