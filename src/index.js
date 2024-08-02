@@ -6,7 +6,7 @@ const app = express()
 
 // settings
 app.set("port", process.env.PORT || 4000);
-app.set("json spaces", 2)
+app.set("json spaces", 2)  //en las respuestas de una API, JSON indentado a 2 espacios
 app.use(
   cors({
     origin: "*", // Allow requests from all origins (replace with specific origin in production)
@@ -18,7 +18,7 @@ app.use(
 
 // middlewares
 app.use(morgan("common")); 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); //convierte en un objeto que se acceder por req.body.
 app.use(express.json());
 
 // routes
